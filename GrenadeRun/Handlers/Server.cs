@@ -21,7 +21,7 @@ namespace GrenadeRun.Handlers
 				GrenadeRun.Instance.Config.Translations.TryGetValue("RoundStarted", out string msg);
 				Map.Broadcast((ushort)GrenadeRun.Instance.Config.Preparation, msg);
 
-				Timing.CallDelayed(0.6f, SpawnClassD);
+				Timing.CallDelayed(0.8f, SpawnClassD);
 
 				Timing.CallDelayed(GrenadeRun.Instance.Config.Preparation, StartGrun);
 				Timing.RunCoroutine(CheckEnd());
@@ -36,7 +36,6 @@ namespace GrenadeRun.Handlers
 
 				GrenadeRun.Instance.GrenadeRound = false;
 				GrenadeRun.Instance.Escapees.Clear();
-				Round.IsLocked = false;
 			}
 		}
 
@@ -46,16 +45,17 @@ namespace GrenadeRun.Handlers
 			{
 				if (player.IsBypassModeEnabled) continue;
 				player.SetRole(RoleType.ClassD);
+				player.Health = player.MaxHealth;
 			}
 		}
 
 		private IEnumerator<float> CheckEnd()
 		{
-			while (true)
+			while (GrenadeRun.Instance.GrenadeRound)
 			{
 				yield return Timing.WaitForSeconds(1);
 
-				if (Exiled.API.Features.Player.List.All(p => p.Role == RoleType.ClassD))
+				if (Exiled.API.Features.Player.List.Any(p => p.Role == RoleType.ClassD))
 				{
 					continue;
 				}
@@ -96,7 +96,7 @@ namespace GrenadeRun.Handlers
 		{
 			yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelay);
 
-			while (true)
+			while (GrenadeRun.Instance.GrenadeRound)
 			{
 				foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
 				{

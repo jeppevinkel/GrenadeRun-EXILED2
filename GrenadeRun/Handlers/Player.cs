@@ -7,7 +7,7 @@ namespace GrenadeRun.Handlers
 	{
 		public void OnDied(DiedEventArgs ev)
 		{
-			if (GrenadeRun.Instance.GrenadeRound && ev.Target != null)
+			if (GrenadeRun.Instance.GrenadeRound && ev.Target != null && ev.HitInformations.GetDamageType() == DamageTypes.Grenade)
 			{
 				GrenadeRun.Instance.Config.Translations.TryGetValue("PlayerDied", out string msg);
 				Map.Broadcast(2, msg.Replace("{player}", ev.Target.Nickname));
