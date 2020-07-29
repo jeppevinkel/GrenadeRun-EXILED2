@@ -49,7 +49,7 @@ namespace GrenadeRun
 			Player.Died += player.OnDied;
 			Player.Escaping += player.OnEscaping;
 	    }
-
+		
 	    public void UnregisterEvents()
 	    {
 		    Server.RoundStarted -= server.OnRoundStarted;

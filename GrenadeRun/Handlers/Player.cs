@@ -3,7 +3,7 @@ using Exiled.Events.EventArgs;
 
 namespace GrenadeRun.Handlers
 {
-	class Player
+	internal class Player
 	{
 		public void OnDied(DiedEventArgs ev)
 		{

@@ -10,8 +10,13 @@ using UnityEngine;
 
 namespace GrenadeRun.Handlers
 {
-	class Server
+	internal class Server
 	{
+		private const int SurfaceBound = 950;
+		private const int LczUpper = 950;
+		private const int LczLower = -950;
+		private const int HczBound = -950;
+
 		public void OnRoundStarted()
 		{
 			if (GrenadeRun.Instance.GrenadeRound)
@@ -89,7 +94,7 @@ namespace GrenadeRun.Handlers
 		private static void StartGrun()
 		{
 			GrenadeRun.Instance.Config.Translations.TryGetValue("DoorsUnlocked", out string msg);
-			Map.Broadcast((ushort)GrenadeRun.Instance.Config.GrenadeDelayLCZ, msg);
+			Map.Broadcast((ushort)GrenadeRun.Instance.Config.GrenadeDelayLcz, msg);
 			UnlockDoors();
 			GrenadeRun.Instance.oldFFValue = FriendlyFireConfig.PauseDetector;
 			FriendlyFireConfig.PauseDetector = true;
@@ -100,13 +105,13 @@ namespace GrenadeRun.Handlers
 
 		private static IEnumerator<float> SpawnGrenadesLcz()
 		{
-			yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayLCZ);
+			yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayLcz);
 
 			while (GrenadeRun.Instance.GrenadeRound)
 			{
 				foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
 				{
-					if (player.Role == RoleType.ClassD)
+					if (player.Role == RoleType.ClassD && player.Position.y > LczLower && LczUpper > player.Position.y)
 					{
 						GrenadeManager gm = player.ReferenceHub.GetComponent<GrenadeManager>();
 						GrenadeSettings grenade = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);
@@ -118,19 +123,19 @@ namespace GrenadeRun.Handlers
 					}
 				}
 
-				yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayLCZ);
+				yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayLcz);
 			}
 		}
 
 		private static IEnumerator<float> SpawnGrenadesHcz()
 		{
-			yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayHCZ);
+			yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayHcz);
 
 			while (GrenadeRun.Instance.GrenadeRound)
 			{
 				foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
 				{
-					if (player.Role == RoleType.ClassD)
+					if (player.Role == RoleType.ClassD && HczBound > player.Position.y)
 					{
 						GrenadeManager gm = player.ReferenceHub.GetComponent<GrenadeManager>();
 						GrenadeSettings grenade = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);
@@ -142,7 +147,7 @@ namespace GrenadeRun.Handlers
 					}
 				}
 
-				yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayHCZ);
+				yield return Timing.WaitForSeconds(GrenadeRun.Instance.Config.GrenadeDelayHcz);
 			}
 		}
 
@@ -154,7 +159,7 @@ namespace GrenadeRun.Handlers
 			{
 				foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
 				{
-					if (player.Role == RoleType.ClassD)
+					if (player.Role == RoleType.ClassD && player.Position.y > SurfaceBound)
 					{
 						GrenadeManager gm = player.ReferenceHub.GetComponent<GrenadeManager>();
 						GrenadeSettings grenade = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);

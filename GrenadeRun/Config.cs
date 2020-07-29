@@ -13,10 +13,10 @@ namespace GrenadeRun
 		public float Preparation { get; set; } = 10f;
 
 		[Description("The time in seconds between each grenade drop in light containment zone.")]
-		public float GrenadeDelayLCZ { get; set; } = 7.0f;
+		public float GrenadeDelayLcz { get; set; } = 7.0f;
 
 		[Description("The time in seconds between each grenade drop in heavy containment zone.")]
-		public float GrenadeDelayHCZ { get; set; } = 6.0f;
+		public float GrenadeDelayHcz { get; set; } = 6.0f;
 
 		[Description("The time in seconds between each grenade drop on the surface.")]
 		public float GrenadeDelaySurface { get; set; } = 5.0f;
