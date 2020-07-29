@@ -10,7 +10,7 @@ namespace GrenadeRun.Handlers
 			if (GrenadeRun.Instance.GrenadeRound && ev.Target != null && ev.HitInformations.GetDamageType() == DamageTypes.Grenade)
 			{
 				GrenadeRun.Instance.Config.Translations.TryGetValue("PlayerDied", out string msg);
-				Map.Broadcast(2, msg.Replace("{player}", ev.Target.Nickname));
+				Map.Broadcast((ushort)GrenadeRun.Instance.Config.DeathMsgTime, msg.Replace("{player}", ev.Target.Nickname));
 			}
 		}
 

@@ -12,11 +12,20 @@ namespace GrenadeRun
 		[Description("The time in seconds to wait before unlocking the doors.")]
 		public float Preparation { get; set; } = 10f;
 
-		[Description("The time in seconds between each grenade drop.")]
-		public float GrenadeDelay { get; set; } = 7.0f;
+		[Description("The time in seconds between each grenade drop in light containment zone.")]
+		public float GrenadeDelayLCZ { get; set; } = 7.0f;
+
+		[Description("The time in seconds between each grenade drop in heavy containment zone.")]
+		public float GrenadeDelayHCZ { get; set; } = 6.0f;
+
+		[Description("The time in seconds between each grenade drop on the surface.")]
+		public float GrenadeDelaySurface { get; set; } = 5.0f;
 
 		[Description("The duration in seconds for the end screen to be displayed.")]
 		public float EndingDelay { get; set; } = 6f;
+
+		[Description("The time in seconds to display the death messages.")]
+		public float DeathMsgTime { get; set; } = 2f;
 
 		public Dictionary<string, string> Translations { get; set; } = new Dictionary<string, string>
 		{

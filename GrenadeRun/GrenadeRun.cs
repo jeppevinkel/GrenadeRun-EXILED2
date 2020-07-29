@@ -14,6 +14,7 @@ namespace GrenadeRun
 
 	    public bool GrenadeRound = false;
 		public List<Exiled.API.Features.Player> Escapees = new List<Exiled.API.Features.Player>();
+		public bool oldFFValue = true;
 
 	    private Handlers.Server server;
 	    private Handlers.Player player;
