@@ -6,6 +6,7 @@ using Exiled.Events.EventArgs;
 using Grenades;
 using MEC;
 using Mirror;
+using Respawning;
 using UnityEngine;
 
 namespace GrenadeRun.Handlers
@@ -17,6 +18,8 @@ namespace GrenadeRun.Handlers
 		private const int LczLower = -950;
 		private const int HczBound = -950;
 
+		public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
+
 		public void OnRoundStarted()
 		{
 			if (GrenadeRun.Instance.GrenadeRound)
@@ -26,10 +29,10 @@ namespace GrenadeRun.Handlers
 				GrenadeRun.Instance.Config.Translations.TryGetValue("RoundStarted", out string msg);
 				Map.Broadcast((ushort)GrenadeRun.Instance.Config.Preparation, msg);
 
-				Timing.CallDelayed(0.8f, SpawnClassD);
+				Coroutines.Add(Timing.CallDelayed(0.8f, SpawnClassD));
 
-				Timing.CallDelayed(GrenadeRun.Instance.Config.Preparation, StartGrun);
-				Timing.RunCoroutine(CheckEnd());
+				Coroutines.Add(Timing.CallDelayed(GrenadeRun.Instance.Config.Preparation, StartGrun));
+				Coroutines.Add(Timing.RunCoroutine(CheckEnd()));
 			}
 		}
 
@@ -37,11 +40,21 @@ namespace GrenadeRun.Handlers
 		{
 			if (GrenadeRun.Instance.GrenadeRound)
 			{
-				Timing.KillCoroutines();
+				foreach (CoroutineHandle handle in Coroutines)
+					Timing.KillCoroutines(handle);
 
 				GrenadeRun.Instance.GrenadeRound = false;
 				GrenadeRun.Instance.Escapees.Clear();
 				FriendlyFireConfig.PauseDetector = GrenadeRun.Instance.oldFFValue;
+			}
+		}
+
+		public void OnRespawningTeam(RespawningTeamEventArgs ev)
+		{
+			if (GrenadeRun.Instance.GrenadeRound)
+			{
+				ev.NextKnownTeam = SpawnableTeamType.None;
+				ev.Players.Clear();
 			}
 		}
 
@@ -91,16 +104,16 @@ namespace GrenadeRun.Handlers
 			}
 		}
 
-		private static void StartGrun()
+		private void StartGrun()
 		{
 			GrenadeRun.Instance.Config.Translations.TryGetValue("DoorsUnlocked", out string msg);
 			Map.Broadcast((ushort)GrenadeRun.Instance.Config.GrenadeDelayLcz, msg);
 			UnlockDoors();
 			GrenadeRun.Instance.oldFFValue = FriendlyFireConfig.PauseDetector;
-			FriendlyFireConfig.PauseDetector = true;
-			Timing.RunCoroutine(SpawnGrenadesLcz());
-			Timing.RunCoroutine(SpawnGrenadesHcz());
-			Timing.RunCoroutine(SpawnGrenadesSurface());
+			FriendlyFireConfig.PauseDetector = true; 
+			Coroutines.Add(Timing.RunCoroutine(SpawnGrenadesLcz()));
+			Coroutines.Add(Timing.RunCoroutine(SpawnGrenadesHcz()));
+			Coroutines.Add(Timing.RunCoroutine(SpawnGrenadesSurface()));
 		}
 
 		private static IEnumerator<float> SpawnGrenadesLcz()

@@ -45,6 +45,7 @@ namespace GrenadeRun
 
 			Server.RoundStarted += server.OnRoundStarted;
 			Server.RestartingRound += server.OnRestartingRound;
+			Server.RespawningTeam += server.OnRespawningTeam;
 
 			Player.Died += player.OnDied;
 			Player.Escaping += player.OnEscaping;
